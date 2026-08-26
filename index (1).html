@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mi despensa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EFE8D6;
+    --card:#FBF8F0;
+    --ink:#26321F;
+    --ink-soft:#5B6350;
+    --line:#D9D0B8;
+    --mustard:#C6941F;
+    --mustard-dark:#8A6412;
+    --sage:#5D7A4C;
+    --sage-dark:#3C5030;
+    --rust:#B5482D;
+    --rust-dark:#7A2C18;
+    --rust-bg:#F3DCD3;
+    --sage-bg:#E3EBD8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'DM Sans', sans-serif;
+    padding:32px 20px 80px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:34px;
+    margin:0 0 4px;
+    letter-spacing:-0.01em;
+  }
+  .subtitle{color:var(--ink-soft);font-size:14px;margin:0 0 14px;}
+  .toolbar{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    margin-bottom:22px;
+  }
+  .save-status{
+    font-size:12px;color:var(--ink-soft);
+    padding:4px 10px;border-radius:20px;background:var(--card);border:1px solid var(--line);
+  }
+  .save-status.ok{color:var(--sage-dark);}
+  .save-status.warn{color:var(--mustard-dark);background:#F3E7C9;border-color:var(--mustard);}
+  .save-status.fail{color:var(--rust-dark);background:var(--rust-bg);border-color:var(--rust);font-weight:700;}
+  .toolbar button{font-size:12px;padding:6px 12px;}
+  .sync-hint{
+    font-size:12.5px;color:var(--ink-soft);
+    margin:-14px 0 22px;
+    padding:8px 12px;
+    background:var(--card);
+    border:1px dashed var(--line);
+    border-radius:8px;
+  }
+  .sync-hint strong{color:var(--ink);}
+  .sync-hint code{
+    background:var(--paper);border:1px solid var(--line);border-radius:5px;
+    padding:1px 5px;font-family:'JetBrains Mono',monospace;font-size:11.5px;
+  }
+  .stats{
+    display:flex;
+    gap:12px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  .stat{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 18px;
+    min-width:130px;
+  }
+  .stat .num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;}
+  .stat .lbl{font-size:12px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.04em;}
+  .stat.alert .num{color:var(--rust-dark);}
+
+  section{margin-bottom:32px;}
+  .section-title{
+    font-family:'Fraunces', serif;
+    font-size:19px;
+    font-weight:600;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .section-title .tag{
+    font-family:'DM Sans',sans-serif;
+    font-size:11px;
+    font-weight:700;
+    background:var(--rust);
+    color:#fff;
+    padding:2px 8px;
+    border-radius:20px;
+  }
+  .export-actions{display:flex;gap:8px;margin:-6px 0 12px;}
+  .export-actions button{font-size:12px;padding:6px 12px;}
+
+  form.addform{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px;
+    display:grid;
+    grid-template-columns:2fr 1.3fr 1fr 1fr 1fr auto;
+    gap:10px;
+    align-items:end;
+  }
+  form.addform label{
+    display:block;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+  }
+  input, select{
+    width:100%;
+    font-family:'DM Sans',sans-serif;
+    font-size:14px;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#fff;
+    color:var(--ink);
+  }
+  input:focus, select:focus{outline:2px solid var(--mustard); outline-offset:1px;}
+  button{
+    font-family:'DM Sans',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    border:none;
+    border-radius:8px;
+    padding:9px 14px;
+    cursor:pointer;
+  }
+  button.primary{background:var(--sage-dark);color:#fff;}
+  button.primary:hover{background:var(--sage);}
+  button.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);}
+  button.ghost:hover{border-color:var(--ink-soft);}
+  button.icon{
+    width:30px;height:30px;padding:0;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--line);background:#fff;font-size:15px;color:var(--ink);
+  }
+  button.icon:hover{background:var(--paper);}
+
+  .shoplist{
+    background:var(--rust-bg);
+    border:1px solid #E3B7A6;
+    border-radius:14px;
+    padding:6px 4px;
+  }
+  .shoplist .empty{padding:16px;color:var(--rust-dark);font-size:13px;}
+  .ship-row{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 14px;border-bottom:1px solid #E3B7A6;
+  }
+  .ship-row:last-child{border-bottom:none;}
+  .ship-row .name{font-weight:700;color:var(--rust-dark);}
+  .ship-row .meta{font-size:12px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;}
+  .ship-actions{display:flex;gap:6px;align-items:center;}
+  .ship-actions input{width:70px;padding:6px 8px;font-size:13px;}
+
+  .cat-block{margin-bottom:14px;border-bottom:1px solid var(--line);}
+  .cat-header{
+    display:flex;align-items:center;gap:8px;
+    padding:10px 4px;cursor:pointer;user-select:none;
+    background:none;border:none;width:100%;text-align:left;
+  }
+  .cat-header:hover .cat-name{color:var(--sage);}
+  .cat-icon{width:16px;height:16px;color:color-mix(in srgb, var(--cat-color, var(--sage-dark)) 75%, var(--ink));flex-shrink:0;display:flex;}
+  .cat-icon svg{width:16px;height:16px;display:block;}
+  .cat-chevron{
+    font-size:11px;color:var(--ink-soft);
+    transition:transform .18s ease;
+    display:inline-block;
+  }
+  .cat-block.collapsed .cat-chevron{transform:rotate(-90deg);}
+  .cat-name{
+    font-size:12px;font-weight:700;color:color-mix(in srgb, var(--cat-color, var(--sage-dark)) 75%, var(--ink));
+    text-transform:uppercase;letter-spacing:0.06em;margin:0;
+  }
+  .cat-count{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);
+    margin-left:2px;
+  }
+  .cat-low-dot{
+    width:7px;height:7px;border-radius:50%;background:var(--rust);
+    display:inline-block;margin-left:2px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:12px;
+    padding-bottom:16px;
+  }
+  .cat-block.collapsed .grid{display:none;}
+  .jar{
+    position:relative;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-left:3px solid var(--cat-color, var(--line));
+    border-radius:14px;
+    padding:14px 14px 12px;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(38,50,31,0.05);
+    transition:box-shadow .18s ease, transform .18s ease;
+  }
+  .jar:hover{box-shadow:0 4px 12px rgba(38,50,31,0.10);transform:translateY(-1px);}
+  .jar.low{border-color:var(--rust);border-left-color:var(--rust);}
+  .jar-fill{
+    position:absolute; left:0; bottom:0; width:100%;
+    background:color-mix(in srgb, var(--cat-color, var(--sage)) 20%, white);
+    z-index:0;
+    transition:height .25s ease;
+  }
+  .jar.low .jar-fill{background:var(--rust-bg);}
+  .jar-content{position:relative;z-index:1;}
+  .jar-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;}
+  .jar-heading{display:flex;align-items:center;gap:8px;min-width:0;}
+  .icon-badge{
+    width:30px;height:30px;border-radius:50%;flex-shrink:0;
+    background:color-mix(in srgb, var(--cat-color, var(--sage-dark)) 16%, white);
+    color:color-mix(in srgb, var(--cat-color, var(--sage-dark)) 75%, var(--ink));
+    border:1px solid rgba(38,50,31,0.08);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .icon-badge svg{width:16px;height:16px;display:block;}
+  .jar.low .icon-badge{background:var(--rust-bg);color:var(--rust-dark);}
+  .jar-name{
+    font-weight:700;font-size:15px;line-height:1.25;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .jar-del{background:none;border:none;color:var(--ink-soft);font-size:16px;cursor:pointer;padding:0 2px;}
+  .jar-del:hover{color:var(--rust-dark);}
+  .jar-qty{
+    font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;
+    margin-top:10px;
+  }
+  .jar-unit{font-size:12px;color:var(--ink-soft);font-weight:400;}
+  .jar-min{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+  .jar.low .jar-min{color:var(--rust-dark);font-weight:700;}
+  .jar-controls{display:flex;gap:6px;margin-top:12px;align-items:center;}
+  .jar-controls input{width:56px;padding:6px 4px;text-align:center;}
+  .badge-low{
+    font-size:10px;font-weight:700;color:var(--rust-dark);
+    background:#fff;border:1px solid var(--rust);
+    padding:1px 6px;border-radius:20px;white-space:nowrap;
+  }
+  .emptystate{
+    text-align:center;padding:40px 20px;color:var(--ink-soft);
+    border:1px dashed var(--line);border-radius:14px;background:var(--card);
+  }
+  @media (max-width:760px){
+    form.addform{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Mi despensa</h1>
+  <p class="subtitle">Controla lo que tienes en casa y lo que hay que reponer.</p>
+
+  <div class="toolbar">
+    <span class="save-status" id="saveStatus">Cargando...</span>
+    <button class="ghost" onclick="exportarCopia()">Copia de seguridad</button>
+    <button class="ghost" onclick="document.getElementById('importFile').click()">Importar copia</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importarCopia(event)">
+  </div>
+
+  <p class="sync-hint" id="syncHint">Sincronización automática activada: cualquiera que abra esta misma app verá los cambios en tiempo real.</p>
+
+  <div class="stats" id="stats"></div>
+
+  <section>
+    <p class="section-title">Añadir producto</p>
+    <form class="addform" id="addForm">
+      <div>
+        <label>Producto</label>
+        <input type="text" id="f_nombre" placeholder="Ej. Garbanzos" list="dl-productos" autocomplete="off" required oninput="autocompletarProducto()">
+        <datalist id="dl-productos"></datalist>
+      </div>
+      <div>
+        <label>Categoría</label>
+        <input type="text" id="f_categoria" placeholder="Ej. Nevera, congelador..." list="dl-categorias" autocomplete="off">
+        <datalist id="dl-categorias"></datalist>
+      </div>
+      <div>
+        <label>Cantidad</label>
+        <input type="number" id="f_cantidad" min="0" step="0.5" value="1" required>
+      </div>
+      <div>
+        <label>Unidad</label>
+        <input type="text" id="f_unidad" placeholder="uds, kg, L..." value="uds">
+      </div>
+      <div>
+        <label>Mínimo</label>
+        <input type="number" id="f_minimo" min="0" step="0.5" value="1" required>
+      </div>
+      <button type="submit" class="primary">Añadir</button>
+    </form>
+  </section>
+
+  <section>
+    <p class="section-title">Lista de la compra <span class="tag" id="shopCount" style="display:none;"></span></p>
+    <div class="export-actions">
+      <button class="ghost" onclick="generarListaRTF()">Exportar a Word</button>
+      <button class="ghost" onclick="generarListaTXT()">Exportar a texto</button>
+    </div>
+    <div class="shoplist" id="shopList"></div>
+  </section>
+
+  <section>
+    <p class="section-title">Despensa</p>
+    <div id="productos"></div>
+  </section>
+</div>
+
+<script>
+let productos = [];
+let colapsadas = new Set();
+
+const SVG_ATTRS = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"';
+const ICONS = {
+  jar: `<svg ${SVG_ATTRS}><path d="M8 3h8M9 3v3.5a1 1 0 0 1-.3.7L6.6 9.3A2 2 0 0 0 6 10.7V19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8.3a2 2 0 0 0-.6-1.4L15 7.2a1 1 0 0 1-.3-.7V3"/></svg>`,
+  fridge: `<svg ${SVG_ATTRS}><rect x="6" y="2" width="12" height="20" rx="1.5"/><line x1="6" y1="9" x2="18" y2="9"/><line x1="9" y1="4.5" x2="9" y2="7"/><line x1="9" y1="11.5" x2="9" y2="14"/></svg>`,
+  snow: `<svg ${SVG_ATTRS}><line x1="12" y1="2" x2="12" y2="22"/><line x1="4.5" y1="6" x2="19.5" y2="18"/><line x1="4.5" y1="18" x2="19.5" y2="6"/></svg>`,
+  box: `<svg ${SVG_ATTRS}><rect x="3" y="7" width="18" height="4" rx="1"/><path d="M5 11v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"/><line x1="10" y1="14.5" x2="14" y2="14.5"/></svg>`,
+  leaf: `<svg ${SVG_ATTRS}><path d="M5 19c8 0 14-6 14-14-8 0-14 6-14 14Z"/><path d="M5 19c3-5 6-8 10-10"/></svg>`,
+  apple: `<svg ${SVG_ATTRS}><path d="M12 8c-3.5 0-6 2.7-6 6.5S9 21 12 21s6-2.8 6-6.5S15.5 8 12 8Z"/><path d="M12 8c0-2 1-3.5 2.5-4"/></svg>`,
+  drumstick: `<svg ${SVG_ATTRS}><path d="M15 9c2 2 2 5 0 7-2 2-5 2-7 0-1-1-1-2 0-3l7-7c1-1 2-1 3 0 1 1 1 2 0 3Z"/><circle cx="6.5" cy="17.5" r="1.5" fill="currentColor" stroke="none"/></svg>`,
+  fish: `<svg ${SVG_ATTRS}><path d="M3 12c3-4 8-6 12-4 2 1 3.5 2.5 5 4-1.5 1.5-3 3-5 4-4 2-9 0-12-4Z"/><circle cx="16" cy="11" r=".6" fill="currentColor" stroke="none"/><path d="M3 12 1 9M3 12l-2 3"/></svg>`,
+  milk: `<svg ${SVG_ATTRS}><path d="M9 2h6v4l2 3v11a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V9l2-3V2Z"/><line x1="7" y1="13" x2="17" y2="13"/></svg>`,
+  bread: `<svg ${SVG_ATTRS}><path d="M4 12c0-5 3.5-8 8-8s8 3 8 8v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5Z"/><line x1="9" y1="10" x2="9" y2="16"/><line x1="13" y1="9" x2="13" y2="16"/><line x1="17" y1="10" x2="17" y2="16"/></svg>`,
+  bottle: `<svg ${SVG_ATTRS}><path d="M10 2h4v4l2 2v12a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V8l2-2V2Z"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`,
+  spray: `<svg ${SVG_ATTRS}><rect x="7" y="8" width="8" height="13" rx="1.5"/><path d="M10 8V5a2 2 0 0 1 2-2h2"/><line x1="14" y1="3" x2="18" y2="3"/><line x1="14" y1="5.5" x2="17" y2="5.5"/></svg>`,
+  egg: `<svg ${SVG_ATTRS}><ellipse cx="12" cy="13" rx="6" ry="8"/></svg>`,
+  cheese: `<svg ${SVG_ATTRS}><path d="M3 10 21 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Z"/><circle cx="9" cy="12.5" r="1" fill="currentColor" stroke="none"/><circle cx="14.5" cy="10.5" r="1" fill="currentColor" stroke="none"/></svg>`,
+  tomato: `<svg ${SVG_ATTRS}><circle cx="12" cy="14" r="7"/><path d="M12 7c-1-2-3-2.5-4-2M12 7c1-2 3-2.5 4-2"/></svg>`,
+  coffee: `<svg ${SVG_ATTRS}><path d="M4 9h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9Z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c-.7.7-.7 1.3 0 2M12 3c-.7.7-.7 1.3 0 2"/></svg>`,
+  cup: `<svg ${SVG_ATTRS}><path d="M6 8h9v8a4 4 0 0 1-4 4h-1a4 4 0 0 1-4-4V8Z"/><path d="M15 10h1.5a2 2 0 0 1 0 4H15"/></svg>`,
+  water: `<svg ${SVG_ATTRS}><path d="M12 3c-4 5-7 9-7 12.5a7 7 0 0 0 14 0C19 12 16 8 12 3Z"/></svg>`,
+  cart: `<svg ${SVG_ATTRS}><circle cx="9" cy="20" r="1" fill="currentColor" stroke="none"/><circle cx="17" cy="20" r="1" fill="currentColor" stroke="none"/><path d="M3 4h2l2.4 12.2a1 1 0 0 0 1 .8h8.6a1 1 0 0 0 1-.8L20 8H6"/></svg>`,
+  bowl: `<svg ${SVG_ATTRS}><path d="M3 11h18a9 9 0 0 1-18 0Z"/><path d="M7 11c0-3.5 2-5.5 5-6"/></svg>`,
+  bag: `<svg ${SVG_ATTRS}><path d="M6 8h12l1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>`,
+  spice: `<svg ${SVG_ATTRS}><rect x="7" y="6" width="10" height="14" rx="2"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><circle cx="10" cy="9.5" r=".4" fill="currentColor" stroke="none"/><circle cx="13.2" cy="9.5" r=".4" fill="currentColor" stroke="none"/><circle cx="11.6" cy="12" r=".4" fill="currentColor" stroke="none"/></svg>`,
+};
+
+const CATEGORY_COLORS = [
+  {keys:['nevera','frigorifico','frio','refrigerador'], color:'#3E9BC9'},
+  {keys:['congelador','congelados'], color:'#33549C'},
+  {keys:['armario','despensa','alacena'], color:'#B07E2E'},
+  {keys:['verdura','hortaliza'], color:'#5C8A3A'},
+  {keys:['fruta'], color:'#D97B3D'},
+  {keys:['carne','carniceria'], color:'#B5482D'},
+  {keys:['pescado','marisco','pescaderia'], color:'#2E8C82'},
+  {keys:['lacteo','leche'], color:'#C9A227'},
+  {keys:['pan','panaderia','olleria'], color:'#B9793B'},
+  {keys:['bebida','refresco'], color:'#7A5296'},
+  {keys:['limpieza','higiene','hogar'], color:'#5C8482'},
+  {keys:['especia'], color:'#E3A6B4'},
+  {keys:['legumbre'], color:'#8B5E3C'},
+  {keys:['pasta','arroz'], color:'#ACA79A'},
+  {keys:['otro'], color:'#FFFFFF'},
+];
+
+function categoryColor(cat){
+  const n = normalize(cat);
+  const rule = CATEGORY_COLORS.find(r => r.keys.some(k => n.includes(k)));
+  return rule ? rule.color : '#3C5030';
+}
+
+const CATEGORY_ICON_RULES = [
+  {keys:['nevera','frigorifico','frio','refrigerador'], icon:'fridge'},
+  {keys:['congelador','congelados'], icon:'snow'},
+  {keys:['armario','despensa','alacena'], icon:'box'},
+  {keys:['verdura','hortaliza'], icon:'leaf'},
+  {keys:['fruta'], icon:'apple'},
+  {keys:['carne','carniceria'], icon:'drumstick'},
+  {keys:['pescado','marisco','pescaderia'], icon:'fish'},
+  {keys:['lacteo','leche'], icon:'milk'},
+  {keys:['pan','panaderia','olleria'], icon:'bread'},
+  {keys:['bebida','refresco'], icon:'bottle'},
+  {keys:['limpieza','higiene','hogar'], icon:'spray'},
+  {keys:['especia'], icon:'spice'},
+  {keys:['legumbre'], icon:'bowl'},
+  {keys:['pasta','arroz'], icon:'bowl'},
+  {keys:['otro'], icon:'cart'},
+];
+
+const PRODUCT_ICON_RULES = [
+  {keys:['leche'], icon:'milk'},
+  {keys:['huevo'], icon:'egg'},
+  {keys:['pan','baguette'], icon:'bread'},
+  {keys:['manzana','pera','platano','naranja'], icon:'apple'},
+  {keys:['pollo','carne','ternera','cerdo','jamon','chorizo','filete','bacon','panceta'], icon:'drumstick'},
+  {keys:['pescado','atun','salmon','marisco','merluza','gamba'], icon:'fish'},
+  {keys:['queso'], icon:'cheese'},
+  {keys:['tomate'], icon:'tomato'},
+  {keys:['cafe'], icon:'coffee'},
+  {keys:['agua'], icon:'water'},
+  {keys:['yogur','nata'], icon:'cup'},
+  {keys:['arroz','pasta','macarron','espagueti','fideo','cereal','muesli','garbanzo','lenteja','alubia','legumbre'], icon:'bowl'},
+  {keys:['aceite','vino','cerveza','zumo','vinagre','refresco'], icon:'bottle'},
+  {keys:['patata','cebolla','ajo','zanahoria','pimiento','lechuga','pepino','calabacin','verdura'], icon:'leaf'},
+  {keys:['mermelada','miel','conserva'], icon:'jar'},
+  {keys:['galleta','chocolate','mantequilla','harina','azucar','sal'], icon:'box'},
+  {keys:['papel','detergente','lejia','jabon','suavizante'], icon:'bag'},
+];
+
+function normalize(s){
+  return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+}
+
+function categoryIcon(cat){
+  const n = normalize(cat);
+  const rule = CATEGORY_ICON_RULES.find(r => r.keys.some(k => n.includes(k)));
+  return rule ? rule.icon : 'cart';
+}
+
+function productIcon(p){
+  const n = normalize(p.nombre);
+  const rule = PRODUCT_ICON_RULES.find(r => r.keys.some(k => n.includes(k)));
+  if(rule) return rule.icon;
+  return p.categoria ? categoryIcon(p.categoria) : 'jar';
+}
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+const LOCAL_DATA_KEY = 'despensa-datos';
+let localOk = true;
+try{ localStorage.setItem('__test__','1'); localStorage.removeItem('__test__'); }catch(e){ localOk = false; }
+
+// Configuración pública de Firebase (no es secreta: la seguridad la dan las reglas de Firestore, no esta clave)
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyD_J4M5BBJk7xyluA3H8tWBJRZSpLZtcTs",
+  authDomain: "mi-despensa-eadd0.firebaseapp.com",
+  projectId: "mi-despensa-eadd0",
+  storageBucket: "mi-despensa-eadd0.firebasestorage.app",
+  messagingSenderId: "682628839096",
+  appId: "1:682628839096:web:968f0b628c9fab22a4e64d"
+};
+const FIRESTORE_DOC = { collection: 'despensa', id: 'compartida' };
+
+let firebaseReady = false;
+let _fbSetDoc = null;
+let _fbDocRef = null;
+let aplicandoRemoto = false;
+
+function guardarLocal(){
+  if(!localOk) return;
+  try{ localStorage.setItem(LOCAL_DATA_KEY, JSON.stringify({productos, colapsadas:[...colapsadas]})); }catch(e){ /* ignore */ }
+}
+
+async function initFirebase(){
+  try{
+    const [{ initializeApp }, { getFirestore, doc, setDoc, onSnapshot }] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js')
+    ]);
+    const app = initializeApp(FIREBASE_CONFIG);
+    const db = getFirestore(app);
+    _fbDocRef = doc(db, FIRESTORE_DOC.collection, FIRESTORE_DOC.id);
+    _fbSetDoc = setDoc;
+    firebaseReady = true;
+
+    onSnapshot(_fbDocRef, (snap) => {
+      if(snap.exists()){
+        const data = snap.data();
+        aplicandoRemoto = true;
+        productos = data.productos || [];
+        colapsadas = new Set(data.colapsadas || []);
+        guardarLocal();
+        render();
+        aplicandoRemoto = false;
+      }
+      marcarEstado(true);
+    }, (err) => {
+      console.warn('Error de sincronización con Firebase', err);
+      marcarEstado(false);
+    });
+  }catch(e){
+    console.warn('No se pudo inicializar Firebase', e);
+    firebaseReady = false;
+    marcarEstado(false);
+  }
+}
+
+async function cargar(){
+  if(localOk){
+    try{
+      const raw = localStorage.getItem(LOCAL_DATA_KEY);
+      if(raw){
+        const d = JSON.parse(raw);
+        productos = d.productos || [];
+        colapsadas = new Set(d.colapsadas || []);
+      }
+    }catch(e){ /* ignore */ }
+  }
+  render();
+  await initFirebase();
+}
+
+function toggleCat(cat){
+  if(colapsadas.has(cat)) colapsadas.delete(cat);
+  else colapsadas.add(cat);
+  guardar();
+  renderProductos();
+}
+
+async function guardar(){
+  guardarLocal();
+  if(aplicandoRemoto) return; // evita reenviar lo que acabamos de recibir de Firebase
+  if(!firebaseReady || !_fbSetDoc){
+    marcarEstado(false);
+    return;
+  }
+  try{
+    await _fbSetDoc(_fbDocRef, { productos, colapsadas: [...colapsadas], updatedAt: Date.now() });
+    marcarEstado(true);
+  }catch(e){
+    console.warn('Fallo al guardar en Firebase', e);
+    marcarEstado(false);
+  }
+}
+
+function marcarEstado(ok){
+  const el = document.getElementById('saveStatus');
+  if(!el) return;
+  if(ok){
+    el.textContent = 'Sincronizado con la nube';
+    el.className = 'save-status ok';
+  }else{
+    el.textContent = 'Sin conexión con la nube (guardado solo en este dispositivo)';
+    el.className = 'save-status fail';
+  }
+}
+
+function objetivo(p){
+  return p.objetivo && p.objetivo > 0 ? p.objetivo : Math.max(p.minimo * 2, p.minimo + 1, 1);
+}
+
+function esBajo(p){
+  return p.cantidad <= p.minimo;
+}
+
+function render(){
+  renderStats();
+  renderShopList();
+  renderProductos();
+  renderDatalists();
+}
+
+function renderDatalists(){
+  const nombres = [...new Map(productos.map(p => [p.nombre.toLowerCase(), p.nombre])).values()];
+  const categorias = [...new Map(productos.filter(p => p.categoria).map(p => [p.categoria.toLowerCase(), p.categoria])).values()];
+  document.getElementById('dl-productos').innerHTML = nombres.map(n => `<option value="${escapeHtml(n)}">`).join('');
+  document.getElementById('dl-categorias').innerHTML = categorias.map(c => `<option value="${escapeHtml(c)}">`).join('');
+}
+
+function autocompletarProducto(){
+  const val = document.getElementById('f_nombre').value.trim().toLowerCase();
+  if(!val) return;
+  const match = [...productos].reverse().find(p => p.nombre.toLowerCase() === val);
+  if(!match) return;
+  document.getElementById('f_categoria').value = match.categoria || '';
+  document.getElementById('f_unidad').value = match.unidad || 'uds';
+  document.getElementById('f_minimo').value = match.minimo;
+}
+
+function renderStats(){
+  const bajos = productos.filter(esBajo).length;
+  const el = document.getElementById('stats');
+  el.innerHTML = `
+    <div class="stat">
+      <div class="num">${productos.length}</div>
+      <div class="lbl">Productos</div>
+    </div>
+    <div class="stat ${bajos>0?'alert':''}">
+      <div class="num">${bajos}</div>
+      <div class="lbl">Bajo mínimo</div>
+    </div>
+  `;
+}
+
+function renderShopList(){
+  const bajos = productos.filter(esBajo);
+  const wrap = document.getElementById('shopList');
+  const countTag = document.getElementById('shopCount');
+  if(bajos.length === 0){
+    countTag.style.display = 'none';
+    wrap.innerHTML = `<div class="empty">Todo bien surtido. Nada por debajo del mínimo.</div>`;
+    return;
+  }
+  countTag.style.display = 'inline-block';
+  countTag.textContent = bajos.length;
+  wrap.innerHTML = bajos.map(p => `
+    <div class="ship-row">
+      <div>
+        <div class="name">${escapeHtml(p.nombre)}</div>
+        <div class="meta">tienes ${fmt(p.cantidad)} ${escapeHtml(p.unidad)} · mínimo ${fmt(p.minimo)}</div>
+      </div>
+      <div class="ship-actions">
+        <input type="number" min="0" step="0.5" value="${fmt(objetivo(p) - p.cantidad)}" id="rep_${p.id}">
+        <button class="primary" onclick="reponer('${p.id}')">Reponer</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderProductos(){
+  const cont = document.getElementById('productos');
+  if(productos.length === 0){
+    cont.innerHTML = `<div class="emptystate">Tu despensa está vacía. Añade tu primer producto arriba.</div>`;
+    return;
+  }
+  const categorias = {};
+  productos.forEach(p => {
+    const c = p.categoria && p.categoria.trim() ? p.categoria.trim() : 'Sin categoría';
+    if(!categorias[c]) categorias[c] = [];
+    categorias[c].push(p);
+  });
+
+  cont.innerHTML = Object.keys(categorias).sort().map(cat => {
+    const items = categorias[cat];
+    const bajos = items.filter(esBajo).length;
+    const isCollapsed = colapsadas.has(cat);
+    const color = categoryColor(cat);
+    return `
+    <div class="cat-block ${isCollapsed ? 'collapsed' : ''}" style="--cat-color:${color}">
+      <button class="cat-header" onclick="toggleCat('${cat.replace(/'/g,"\\'")}')">
+        <span class="cat-chevron">&#9660;</span>
+        <span class="cat-icon">${ICONS[categoryIcon(cat)]}</span>
+        <span class="cat-name">${escapeHtml(cat)}</span>
+        <span class="cat-count">${items.length}</span>
+        ${bajos > 0 ? `<span class="cat-low-dot" title="${bajos} bajo mínimo"></span>` : ''}
+      </button>
+      <div class="grid">
+        ${items.map(p => jarCard(p)).join('')}
+      </div>
+    </div>
+  `;
+  }).join('');
+}
+
+function jarCard(p){
+  const low = esBajo(p);
+  const pct = Math.max(0, Math.min(100, (p.cantidad / objetivo(p)) * 100));
+  return `
+    <div class="jar ${low?'low':''}">
+      <div class="jar-fill" style="height:${pct}%"></div>
+      <div class="jar-content">
+        <div class="jar-top">
+          <div class="jar-heading">
+            <div class="icon-badge">${ICONS[productIcon(p)]}</div>
+            <div class="jar-name">${escapeHtml(p.nombre)}</div>
+          </div>
+          <button class="jar-del" title="Eliminar" onclick="eliminar('${p.id}')">&times;</button>
+        </div>
+        ${low ? `<span class="badge-low">queda poco</span>` : ''}
+        <div class="jar-qty">${fmt(p.cantidad)} <span class="jar-unit">${escapeHtml(p.unidad)}</span></div>
+        <div class="jar-min">mínimo: ${fmt(p.minimo)} ${escapeHtml(p.unidad)}</div>
+        <div class="jar-controls">
+          <button class="icon" onclick="ajustar('${p.id}', -1)">&minus;</button>
+          <button class="icon" onclick="ajustar('${p.id}', 1)">+</button>
+          <input type="number" step="0.5" placeholder="cant." id="add_${p.id}">
+          <button class="ghost" onclick="ajustarCustom('${p.id}')">Añadir</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function fmt(n){
+  n = Math.round(n * 100) / 100;
+  return Number.isInteger(n) ? n.toString() : n.toString();
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function ajustar(id, delta){
+  const p = productos.find(x => x.id === id);
+  if(!p) return;
+  p.cantidad = Math.max(0, Math.round((p.cantidad + delta) * 100) / 100);
+  await guardar();
+  render();
+}
+
+async function ajustarCustom(id){
+  const input = document.getElementById('add_' + id);
+  const val = parseFloat(input.value);
+  if(isNaN(val) || val === 0) return;
+  const p = productos.find(x => x.id === id);
+  if(!p) return;
+  p.cantidad = Math.max(0, Math.round((p.cantidad + val) * 100) / 100);
+  input.value = '';
+  await guardar();
+  render();
+}
+
+async function reponer(id){
+  const input = document.getElementById('rep_' + id);
+  const val = parseFloat(input.value);
+  if(isNaN(val) || val <= 0) return;
+  const p = productos.find(x => x.id === id);
+  if(!p) return;
+  p.cantidad = Math.round((p.cantidad + val) * 100) / 100;
+  await guardar();
+  render();
+}
+
+async function eliminar(id){
+  productos = productos.filter(x => x.id !== id);
+  await guardar();
+  render();
+}
+
+function datosListaCompra(){
+  const bajos = productos.filter(esBajo);
+  const porCategoria = {};
+  bajos.forEach(p => {
+    const c = p.categoria && p.categoria.trim() ? p.categoria.trim() : 'Sin categoría';
+    if(!porCategoria[c]) porCategoria[c] = [];
+    porCategoria[c].push(p);
+  });
+  const fecha = new Date().toLocaleDateString('es-ES', { day:'numeric', month:'long', year:'numeric' });
+  return { bajos, porCategoria, fecha };
+}
+
+function descargarArchivo(contenido, tipo, nombreArchivo){
+  const blob = new Blob([contenido], { type: tipo });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = nombreArchivo;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function escapeRtf(text){
+  return String(text)
+    .replace(/[\\{}]/g, c => '\\' + c)
+    .split('')
+    .map(ch => {
+      const code = ch.codePointAt(0);
+      return code > 126 ? '\\u' + code + '?' : ch;
+    })
+    .join('');
+}
+
+function generarListaRTF(){
+  const { bajos, porCategoria, fecha } = datosListaCompra();
+  if(bajos.length === 0){
+    alert('No hay ningún producto por debajo del mínimo ahora mismo, así que no hay nada que comprar.');
+    return;
+  }
+  let cuerpo = '';
+  Object.keys(porCategoria).sort().forEach(cat => {
+    cuerpo += `\\par{\\b\\fs24 ${escapeRtf(cat)}\\b0\\fs22\\par}\n`;
+    porCategoria[cat].forEach(p => {
+      const falta = Math.max(0, objetivo(p) - p.cantidad);
+      const linea = `${p.nombre} \u2014 tienes ${fmt(p.cantidad)} ${p.unidad}, m\u00ednimo ${fmt(p.minimo)} (comprar unas ${fmt(falta)} ${p.unidad})`;
+      cuerpo += `{\\bullet\\tab ${escapeRtf(linea)}\\par}\n`;
+    });
+  });
+
+  const rtf = `{\\rtf1\\ansi\\ansicpg1252\\deff0
+{\\fonttbl{\\f0\\fswiss\\fcharset0 Calibri;}}
+\\f0\\fs22
+{\\fs32\\b ${escapeRtf('Lista de la compra')}\\b0\\fs22\\par}
+{\\fs18\\i ${escapeRtf(fecha)}\\i0\\fs22\\par}
+${cuerpo}
+}`;
+
+  descargarArchivo(rtf, 'application/rtf', `lista-compra-${new Date().toISOString().slice(0,10)}.rtf`);
+}
+
+function generarListaTXT(){
+  const { bajos, porCategoria, fecha } = datosListaCompra();
+  if(bajos.length === 0){
+    alert('No hay ningún producto por debajo del mínimo ahora mismo, así que no hay nada que comprar.');
+    return;
+  }
+  let texto = `LISTA DE LA COMPRA\n${fecha}\n\n`;
+  Object.keys(porCategoria).sort().forEach(cat => {
+    texto += `${cat.toUpperCase()}\n`;
+    porCategoria[cat].forEach(p => {
+      const falta = Math.max(0, objetivo(p) - p.cantidad);
+      texto += `- ${p.nombre} (tienes ${fmt(p.cantidad)} ${p.unidad}, mínimo ${fmt(p.minimo)}; comprar ~${fmt(falta)} ${p.unidad})\n`;
+    });
+    texto += '\n';
+  });
+  descargarArchivo(texto, 'text/plain;charset=utf-8', `lista-compra-${new Date().toISOString().slice(0,10)}.txt`);
+}
+
+function exportarCopia(){
+  const data = JSON.stringify({ productos, colapsadas: [...colapsadas] }, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const fecha = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `despensa-copia-${fecha}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function importarCopia(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  try{
+    const text = await file.text();
+    const data = JSON.parse(text);
+    const nuevos = Array.isArray(data) ? data : data.productos;
+    if(!Array.isArray(nuevos)) throw new Error('Formato no válido');
+    if(!confirm(`Se importarán ${nuevos.length} productos y sustituirán los datos actuales. ¿Continuar?`)) {
+      event.target.value = '';
+      return;
+    }
+    productos = nuevos;
+    if(!Array.isArray(data) && Array.isArray(data.colapsadas)){
+      colapsadas = new Set(data.colapsadas);
+    }
+    await guardar();
+    render();
+  }catch(e){
+    alert('No se pudo leer el archivo. Asegúrate de que es una copia de seguridad válida.');
+  }
+  event.target.value = '';
+}
+
+document.getElementById('addForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById('f_nombre').value.trim();
+  const categoria = document.getElementById('f_categoria').value.trim();
+  const cantidad = parseFloat(document.getElementById('f_cantidad').value);
+  const unidad = document.getElementById('f_unidad').value.trim() || 'uds';
+  const minimo = parseFloat(document.getElementById('f_minimo').value);
+
+  if(!nombre || isNaN(cantidad) || isNaN(minimo)) return;
+
+  productos.push({
+    id: uid(),
+    nombre, categoria, unidad,
+    cantidad, minimo,
+    objetivo: 0
+  });
+
+  e.target.reset();
+  document.getElementById('f_cantidad').value = 1;
+  document.getElementById('f_unidad').value = 'uds';
+  document.getElementById('f_minimo').value = 1;
+
+  await guardar();
+  render();
+});
+
+cargar();
+</script>
+</body>
+</html>
