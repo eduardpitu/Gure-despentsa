@@ -204,7 +204,8 @@
     margin-left:2px;
   }
   .cat-low-dot{
-    width:7px;height:7px;border-radius:50%;background:var(--mustard);
+    width:7px;height:7px;border-radius:50%;
+    background:color-mix(in srgb, var(--cat-color, var(--mustard)) 65%, var(--paper));
     display:inline-block;margin-left:2px;
   }
   .cat-out-dot{
@@ -230,7 +231,10 @@
     transition:box-shadow .18s ease, transform .18s ease;
   }
   .jar:hover{box-shadow:0 4px 12px rgba(38,50,31,0.10);transform:translateY(-1px);}
-  .jar.low{border-color:var(--mustard);border-left-color:var(--mustard);}
+  .jar.low{
+    border-color:color-mix(in srgb, var(--cat-color, var(--mustard)) 55%, var(--line));
+    border-left-color:var(--cat-color, var(--mustard));
+  }
   .jar.out{border-color:var(--rust);border-left-color:var(--rust);}
   .jar-fill{
     position:absolute; left:0; bottom:0; width:100%;
@@ -238,7 +242,7 @@
     z-index:0;
     transition:height .25s ease;
   }
-  .jar.low .jar-fill{background:#F5E4B8;}
+  .jar.low .jar-fill{background:color-mix(in srgb, var(--cat-color, var(--mustard)) 30%, var(--paper));}
   .jar.out .jar-fill{background:var(--rust-bg);}
   .jar-content{position:relative;z-index:1;}
   .jar-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;}
@@ -251,7 +255,10 @@
     display:flex;align-items:center;justify-content:center;
   }
   .icon-badge svg{width:16px;height:16px;display:block;}
-  .jar.low .icon-badge{background:#F5E4B8;color:var(--mustard-dark);}
+  .jar.low .icon-badge{
+    background:color-mix(in srgb, var(--cat-color, var(--mustard)) 22%, white);
+    color:color-mix(in srgb, var(--cat-color, var(--mustard)) 60%, var(--ink));
+  }
   .jar.out .icon-badge{background:var(--rust-bg);color:var(--rust-dark);}
   .jar-name{
     font-weight:700;font-size:15px;line-height:1.25;
@@ -265,13 +272,15 @@
   }
   .jar-unit{font-size:12px;color:var(--ink-soft);font-weight:400;}
   .jar-min{font-size:11px;color:var(--ink-soft);margin-top:2px;}
-  .jar.low .jar-min{color:var(--mustard-dark);font-weight:700;}
+  .jar.low .jar-min{color:color-mix(in srgb, var(--cat-color, var(--mustard)) 70%, var(--ink));font-weight:700;}
   .jar.out .jar-min{color:var(--rust-dark);font-weight:700;}
   .jar-controls{display:flex;gap:6px;margin-top:12px;align-items:center;}
   .jar-controls input{width:56px;padding:6px 4px;text-align:center;}
   .badge-low{
-    font-size:10px;font-weight:700;color:var(--mustard-dark);
-    background:#fff;border:1px solid var(--mustard);
+    font-size:10px;font-weight:700;
+    color:color-mix(in srgb, var(--cat-color, var(--mustard)) 70%, var(--ink));
+    background:#fff;
+    border:1px solid color-mix(in srgb, var(--cat-color, var(--mustard)) 55%, white);
     padding:1px 6px;border-radius:20px;white-space:nowrap;
   }
   .badge-out{
@@ -733,8 +742,6 @@ function jarCard(p){
         <div class="jar-controls">
           <button class="icon" onclick="ajustar('${p.id}', -1)">&minus;</button>
           <button class="icon" onclick="ajustar('${p.id}', 1)">+</button>
-          <input type="number" step="0.5" placeholder="cant." id="add_${p.id}">
-          <button class="ghost" onclick="ajustarCustom('${p.id}')">Añadir</button>
         </div>
       </div>
     </div>
@@ -754,18 +761,6 @@ async function ajustar(id, delta){
   const p = productos.find(x => x.id === id);
   if(!p) return;
   p.cantidad = Math.max(0, Math.round((p.cantidad + delta) * 100) / 100);
-  await guardar();
-  render();
-}
-
-async function ajustarCustom(id){
-  const input = document.getElementById('add_' + id);
-  const val = parseFloat(input.value);
-  if(isNaN(val) || val === 0) return;
-  const p = productos.find(x => x.id === id);
-  if(!p) return;
-  p.cantidad = Math.max(0, Math.round((p.cantidad + val) * 100) / 100);
-  input.value = '';
   await guardar();
   render();
 }
