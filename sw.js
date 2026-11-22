@@ -1,7 +1,7 @@
-// Alacena · service worker
+// Despentsa · service worker
 // Estrategia: la app se abre siempre con la última versión si hay conexión (red primero)
 // y, si no la hay, desde la copia guardada. Así las actualizaciones nunca se quedan "atascadas".
-const CACHE = 'alacena-v2';
+const CACHE = 'despentsa-v1';
 const PRECACHE = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {

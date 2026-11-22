@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Alacena · Tu despensa, siempre al día</title>
+<title>Despentsa · Tu despensa, siempre al día</title>
 <meta name="description" content="Controla lo que tienes en casa, recibe avisos cuando algo se acaba y comparte la lista de la compra con quien vives.">
 <meta name="theme-color" content="#F6F1E7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#141B16" media="(prefers-color-scheme: dark)">
@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Alacena">
+<meta name="apple-mobile-web-app-title" content="Despentsa">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
@@ -124,31 +124,37 @@
   .cat-dots .l{background:color-mix(in srgb,var(--c) 55%,var(--surface));outline:1.5px solid color-mix(in srgb,var(--c) 75%,var(--ink));}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
   .cat.closed .card{display:none;}
-  .row{position:relative;display:grid;grid-template-columns:46px 1fr auto;grid-template-areas:"ava info step" "bar bar bar";align-items:center;gap:2px 12px;padding:13px 14px 0;}
-  .row + .row{border-top:1px solid var(--line);}
-  .ava{grid-area:ava;width:46px;height:46px;border-radius:15px;display:grid;place-items:center;
+  .cat .card{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;background:none;border:0;box-shadow:none;border-radius:0;overflow:visible;}
+  @media(min-width:600px){.cat .card{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}}
+  .row{position:relative;display:flex;flex-direction:column;gap:9px;padding:12px 12px 0;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;min-width:0;}
+  .row.out{border-color:color-mix(in srgb,var(--red) 38%,var(--line));}
+  .row-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;}
+  .flags{display:flex;flex-direction:column;align-items:flex-end;gap:4px;min-width:0;}
+  .ava{width:42px;height:42px;flex:none;border-radius:14px;display:grid;place-items:center;
     background:color-mix(in srgb,var(--c) 15%,var(--surface));color:color-mix(in srgb,var(--c) 82%,var(--ink));}
-  .ava .ic{width:23px;height:23px;}
+  .ava .ic{width:24px;height:24px;}
   .row.out .ava{background:var(--red-soft);color:var(--red);}
-  .info{grid-area:info;text-align:left;min-width:0;display:block;}
-  .nm{display:block;font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .info{display:block;text-align:left;min-width:0;width:100%;}
+  .nm{display:block;font-weight:600;font-size:15px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;}
+  .row .nm{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.4em;white-space:normal;}
+  .crow .nm{white-space:nowrap;}
   .sub{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:12.5px;color:var(--ink-3);margin-top:3px;}
-  .tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-weight:700;font-size:11.5px;line-height:1.5;}
+  .tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-weight:700;font-size:11px;line-height:1.5;white-space:nowrap;}
   .tag .ic{width:12px;height:12px;stroke-width:2.2;}
   .tag.out{background:var(--red);color:#fff;}
   .tag.low{background:color-mix(in srgb,var(--c) 14%,var(--surface));color:color-mix(in srgb,var(--c) 78%,var(--ink));border:1px solid color-mix(in srgb,var(--c) 35%,transparent);}
   .tag.exp{background:var(--amber-soft);color:var(--amber);}
   .tag.exp.bad{background:var(--red-soft);color:var(--red);}
-  .step{grid-area:step;display:flex;align-items:center;gap:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:3px;}
-  .step button{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:var(--ink);background:var(--surface);box-shadow:0 1px 1px rgba(0,0,0,.05);}
+  .step{display:flex;align-items:center;justify-content:space-between;gap:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:3px;}
+  .step button{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:var(--ink);background:var(--surface);box-shadow:0 1px 1px rgba(0,0,0,.05);flex:none;}
   .step button:active{transform:scale(.92);}
   .step button[disabled]{opacity:.3;pointer-events:none;}
   .step .ic{width:18px;height:18px;stroke-width:2.2;}
-  .q{min-width:50px;text-align:center;font-variant-numeric:tabular-nums;line-height:1.05;}
+  .q{flex:1;min-width:46px;text-align:center;font-variant-numeric:tabular-nums;line-height:1.05;}
   .q b{font-size:17px;font-weight:700;display:block;}
   .q small{font-size:11px;color:var(--ink-3);}
   .row.out .q b{color:var(--red);}
-  .bar{grid-area:bar;height:4px;margin:12px -14px 0;background:var(--surface-2);}
+  .bar{height:4px;margin:3px -12px 0;background:var(--surface-2);}
   .bar i{display:block;height:100%;background:var(--c);border-radius:0 4px 4px 0;transition:width .3s;}
   .row.low .bar i{background:color-mix(in srgb,var(--c) 50%,var(--surface));}
   .row.out .bar i{background:var(--red);}
@@ -167,13 +173,13 @@
   .grp.ext .grp-head{color:var(--ink-2);} .grp.ext .grp-head i{background:var(--ink-3);}
   .crow{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:12px;padding:12px 14px;}
   .crow + .crow{border-top:1px solid var(--line);}
-  .crow .info,.crow .step{grid-area:auto;}
-  .crow .info{display:block;}
   .chk{width:30px;height:30px;border-radius:50%;border:2px solid var(--ink-3);display:grid;place-items:center;color:transparent;transition:all .15s;}
   .chk .ic{width:17px;height:17px;stroke-width:3;}
   .crow.done .chk{background:var(--brand);border-color:var(--brand);color:var(--brand-ink);}
   .crow.done .nm{text-decoration:line-through;color:var(--ink-3);}
+  .crow .step{justify-content:flex-start;}
   .crow .step button{width:34px;height:34px;}
+  .crow .q{flex:none;}
   .crow .rm{width:34px;height:34px;color:var(--ink-3);display:grid;place-items:center;}
   .cartbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom));width:min(420px,calc(100% - 24px));z-index:29;}
   .cartbar .btn{width:100%;min-height:54px;box-shadow:0 10px 30px color-mix(in srgb,var(--brand) 40%,transparent);font-size:16px;}
@@ -245,7 +251,7 @@
 
   /* ---------- Vacíos ---------- */
   .empty{text-align:center;padding:38px 22px;background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius);margin-top:14px;}
-  .empty svg.hero{width:150px;height:auto;margin:0 auto 10px;display:block;}
+  .empty svg.hero{width:140px;height:auto;margin:0 auto 10px;display:block;}
   .empty h3{font:600 21px/1.2 var(--serif);margin-bottom:6px;}
   .empty p{color:var(--ink-2);font-size:14.5px;max-width:34ch;margin:0 auto 18px;}
   .empty .acts{justify-content:center;} .empty .acts .btn{flex:none;}
@@ -260,7 +266,7 @@
   .ob{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:calc(24px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
     background:radial-gradient(900px 420px at 50% -80px,color-mix(in srgb,var(--brand) 22%,transparent),transparent 70%),var(--bg);}
   .ob-wrap{width:min(440px,100%);animation:fade .35s ease;}
-  .ob-hero{display:flex;justify-content:center;margin-bottom:8px;} .ob-hero svg{width:min(320px,86%);height:auto;}
+  .ob-hero{display:flex;justify-content:center;margin-bottom:8px;} .ob-hero svg{filter:drop-shadow(0 12px 24px rgba(35,80,64,.3));margin-top:6px;}
   .ob-brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:6px;} .ob-brand h1{font:700 44px/1 var(--serif);letter-spacing:-.025em;}
   .ob-tag{text-align:center;color:var(--ink-2);font-size:17px;margin:8px 0 24px;}
   .ob-points{list-style:none;margin:0 0 24px;padding:0;display:flex;flex-direction:column;gap:14px;}
@@ -379,19 +385,64 @@ const P = {
   cookie:'<circle cx="12" cy="12" r="8.5"/><circle cx="9" cy="9.5" r=".9" fill="currentColor" stroke="none"/><circle cx="14.5" cy="10.5" r=".9" fill="currentColor" stroke="none"/><circle cx="10.5" cy="15" r=".9" fill="currentColor" stroke="none"/><circle cx="15" cy="15.5" r=".9" fill="currentColor" stroke="none"/>',
   roll:'<ellipse cx="12" cy="7" rx="7" ry="3"/><path d="M5 7v10c0 1.7 3.1 3 7 3s7-1.3 7-3V7"/><ellipse cx="12" cy="7" rx="2.5" ry="1"/>'
 };
+const F = 'fill="currentColor" fill-opacity=".16"';
+Object.assign(P, {
+  fridge:`<rect x="5.5" y="2.5" width="13" height="19" rx="2.5" ${F}/><path d="M5.5 9.5h13M8.5 5.5v1.8M8.5 12v3M8 21.5v1M16 21.5v1"/>`,
+  snow:`<path d="M12 3v18M4.6 7.5l14.8 9M4.6 16.5l14.8-9M9.5 4.6 12 6.8l2.5-2.2M9.5 19.4 12 17.2l2.5 2.2"/><circle cx="12" cy="12" r="2.3" ${F}/>`,
+  box:`<rect x="4" y="3" width="16" height="16" rx="2" ${F}/><path d="M12 3v16M4 19v2M20 19v2M9.5 10.5v2M14.5 10.5v2"/>`,
+  carrot:`<path d="M14 7c2.5.5 3.5 3 3 4.5L6.2 20.3c-.8.6-2.5-1-1.8-1.9L12.5 7.6 14 7Z" ${F}/><path d="M15.5 6.5C15.5 4 17 3 18.5 3c0 1.800-1 3-3 3.500ZM16.500 8c2-.5 4 0 4.500 1.500-1.500 1-3.200.5-4.500-1.500Z"/><path d="M9 13.500l2 1.500M7.500 16.500l1.800 1.300"/>`,
+  apple:`<path d="M12 7.500c-1.500-1-5-1-6 2.500-1 3.500.8 8.500 3.500 10.500 1 .7 1.700.5 2.500.2.800.3 1.500.5 2.500-.2 2.700-2 4.500-7 3.500-10.500-1-3.500-4.500-3.500-6-2.500Z" ${F}/><path d="M12 7.500C12 5.500 12.800 4 14 3M13 5.500c1.500-1.500 3.500-1.500 4.500-1-.5 1.800-2.500 2.500-4.500 1Z"/>`,
+  drumstick:`<circle cx="15" cy="9" r="5.500" ${F}/><path d="M11.200 12.800 6.500 17.500M13 7.200a3 3 0 0 1 3.200-.8"/><circle cx="5.400" cy="17" r="1.600"/><circle cx="7" cy="19" r="1.600"/>`,
+  fish:`<path d="M17.500 12c-2.500 4-7 5.800-11 4-1-.5-2-1.200-2.800-2.200L2 16V8l1.700 2.200C4.500 9.200 5.500 8.500 6.500 8c4-1.800 8.500 0 11 4Z" ${F}/><path d="M12 9.300c1 1.500 1 3.900 0 5.400"/><circle cx="15" cy="11" r=".7" fill="currentColor" stroke="none"/>`,
+  milk:`<path d="M8.500 2.500h7l2 4v13.500a1.500 1.500 0 0 1-1.500 1.500H8A1.500 1.500 0 0 1 6.500 20V6.500l2-4Z" ${F}/><path d="M6.500 6.500h11M9.500 12.500h5v4h-5z"/>`,
+  bread:`<path d="M4.500 10.500C3.500 7 6 4.500 9.500 4.500h5c3.500 0 6 2.500 5 6V18a1.500 1.500 0 0 1-1.500 1.500H6A1.500 1.500 0 0 1 4.500 18v-7.500Z" ${F}/><path d="M9.500 9.500l1.500 3M13 9.500l1.500 3"/>`,
+  bottle:`<path d="M10 2.500h4v5.200c0 .8.500 1.400 1.200 2 .5.400.8 1 .8 1.800V20a1.500 1.500 0 0 1-1.500 1.500h-5A1.500 1.500 0 0 1 8 20v-8.500c0-.8.300-1.400.8-1.800.7-.6 1.200-1.200 1.200-2V2.500Z" ${F}/><path d="M8 14h8M8 17.500h8"/>`,
+  spray:`<rect x="6.500" y="9" width="8" height="12" rx="2" ${F}/><path d="M8.500 9V6.500h5L16 4.500M16.500 8h2.500M16.500 10.500h2"/><circle cx="19.500" cy="5.500" r=".8"/>`,
+  spice:`<rect x="6.500" y="7" width="11" height="14" rx="2.500" ${F}/><rect x="8" y="3.500" width="8" height="3.500" rx="1"/><path d="M10 11.500h4M10 15h4"/>`,
+  pod:`<path d="M4.500 19.500C3 11 8.500 4.500 19.500 4.500c.5 11-5 16-15 15Z" ${F}/><circle cx="9.500" cy="14.500" r="1.600"/><circle cx="12.500" cy="11.500" r="1.600"/><circle cx="15.500" cy="8.500" r="1.600"/>`,
+  wheat:`<path d="M12 21.500V9"/>${[9.5,14,18.5].map(y=>`<path d="M12 ${y}c-2.200 0-3.500-1.500-3.500-3.700 2.200 0 3.500 1.500 3.500 3.700ZM12 ${y}c2.200 0 3.500-1.500 3.500-3.700-2.200 0-3.500 1.500-3.500 3.700Z" ${F}/>`).join('')}<path d="M12 5.500c-1-.9-1-2.500 0-3.500 1 1 1 2.600 0 3.500Z" ${F}/>`,
+  cart:`<path d="M3.500 10h17l-1.700 9.200a1.500 1.500 0 0 1-1.500 1.300H6.700a1.500 1.500 0 0 1-1.500-1.300L3.500 10Z" ${F}/><path d="M8 10l3-6M16 10l-3-6M9 13.500v4M12 13.500v4M15 13.500v4"/>`,
+  jar:`<rect x="6" y="7.500" width="12" height="13.500" rx="3" ${F}/><rect x="7.500" y="3.500" width="9" height="4" rx="1.200"/><path d="M9.500 13h5"/>`,
+  bowl:`<path d="M3 11h18a9 9 0 0 1-18 0Z" ${F}/><path d="M8 20.500h8M8 4c-.8.800-.8 1.700 0 2.500M12 3.500c-.8.800-.8 1.700 0 2.500M16 4c-.8.800-.8 1.700 0 2.500"/>`,
+  egg:`<ellipse cx="12" cy="13" rx="6" ry="8" ${F}/><path d="M9 9.500c.5-1 1.200-1.600 2-1.900"/>`
+});
+
 const ic = (n, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n] || P.jar}</svg>`;
 
-const logo = (s = 36) => `<svg width="${s}" height="${s}" viewBox="0 0 512 512" aria-hidden="true"><defs><linearGradient id="lg${s}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3E8A66"/><stop offset="1" stop-color="#235040"/></linearGradient></defs><rect width="512" height="512" rx="116" fill="url(#lg${s})"/><path d="M256 138C254 104 272 78 308 68C310 104 292 132 256 138Z" fill="#CDE8C0"/><path d="M256 138C256 112 242 94 214 90C212 116 228 134 256 138Z" fill="#A6D497"/><rect x="150" y="190" width="212" height="240" rx="64" fill="#FBF6EA"/><rect x="176" y="138" width="160" height="64" rx="20" fill="#E6B04A"/><rect x="176" y="182" width="160" height="10" fill="#CF9A33" opacity=".55"/><path d="M204 316L242 354L312 276" fill="none" stroke="#2F6B4F" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+// Logo: la «D» de Despentsa es un hueco de despensa con profundidad (pared lateral oscura, fondo y suelo de la balda)
+// y dos tarros apoyados dentro.
+// Tarros planos de cocina (polígonos con hombros achaflanados): cara izquierda iluminada, borde derecho en sombra,
+// brillo en la tapa y sombra sobre el suelo bajo el tarro y hacia el fondo del armario.
+function jarSVG(x, yb, w, h, c, lid, lab){
+  const t = yb - h, k = w * .14, k2 = w * .1, lw = w * .9, lx = x + (w - lw) / 2;
+  const body = `${x + k},${t} ${x + w - k},${t} ${x + w},${t + k} ${x + w},${yb - k2} ${x + w - k2},${yb} ${x + k2},${yb} ${x},${yb - k2} ${x},${t + k}`;
+  return `<polygon points="${body}" fill="${c}"/>` +
+    `<polygon points="${x + k},${t} ${x + w * .36},${t} ${x + w * .36},${yb} ${x + k2},${yb} ${x},${yb - k2} ${x},${t + k}" fill="#fff" opacity=".22"/>` +
+    `<polygon points="${x + w * .82},${t} ${x + w - k},${t} ${x + w},${t + k} ${x + w},${yb - k2} ${x + w - k2},${yb} ${x + w * .82},${yb}" fill="#0B1F16" opacity=".16"/>` +
+    `<rect x="${x + w * .12}" y="${t + h * .36}" width="${w * .76}" height="${h * .32}" rx="3" fill="${lab}" opacity=".9"/>` +
+    `<rect x="${lx}" y="${t - 13}" width="${lw}" height="16" rx="4.5" fill="${lid}"/>` +
+    `<rect x="${lx + 4}" y="${t - 11}" width="${lw * .5}" height="3" rx="1.5" fill="#fff" opacity=".7"/>` +
+    `<rect x="${x + w * .1}" y="${t + h * .14}" width="3" height="${h * .62}" rx="1.5" fill="#fff" opacity=".35"/>`;
+}
+// Sombra sobre el suelo: un pequeño óvalo muy oscuro que queda detrás del tarro y solo asoma por abajo a la derecha,
+// a la altura del bisel inferior derecho, algo levantado hacia el fondo. Su base no pasa de la base del tarro.
+const shadowSVG = (x, yb, w, h) => {
+  const rx = w * .21, ry = w * .085, a = 12 * Math.PI / 180;
+  const hh = Math.hypot(rx * Math.sin(a), ry * Math.cos(a));
+  const cx = x + w - w * .06, cy = yb - 1.5 - hh;
+  return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" transform="rotate(-12 ${cx} ${cy})" fill="#081811" opacity=".85"/>`;
+};
+const ALC = 'M200 150H300A80 80 0 0 1 380 230V322A40 40 0 0 1 340 362H200Z';
+const MARK = `<g transform="translate(-48 0)"><path d="M150 98H300A158 158 0 0 1 300 414H150Z" fill="#FBF6EA"/>` +
+  `<clipPath id="alc"><path d="${ALC}"/></clipPath><clipPath id="flr"><polygon points="200,362 238,326 410,326 410,362"/></clipPath><g clip-path="url(#alc)"><rect x="200" y="150" width="210" height="212" fill="#1D4333"/>` +
+  `<polygon points="200,150 238,150 238,326 200,362" fill="#10281E"/><polygon points="200,362 238,326 410,326 410,362" fill="#3A7452"/>` +
+  `<g clip-path="url(#flr)">${shadowSVG(233, 346, 62, 84)}${shadowSVG(305, 346, 46, 58)}</g></g>` +
+  `${jarSVG(233, 346, 62, 84, '#4DB2EC', '#FBF6EA', '#FBF6EA')}${jarSVG(305, 346, 46, 58, '#F08A3C', '#FBF6EA', '#FBF6EA')}</g>`;
+const logo = (s = 36) => `<svg width="${s}" height="${s}" viewBox="0 0 512 512" aria-hidden="true"><defs><linearGradient id="lg${s}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3E8A66"/><stop offset="1" stop-color="#235040"/></linearGradient></defs><rect width="512" height="512" rx="116" fill="url(#lg${s})"/>${MARK}</svg>`;
 
-// Estantería ilustrada (onboarding y estados vacíos)
+// Escena mínima para los estados vacíos: una balda y dos tarros
 function shelfSVG(){
-  const cols = ['#2A9BD6', '#3F9142', '#E2762B', '#8A4FB5', '#C0432D'];
-  let jars = '';
-  cols.forEach((c, i) => {
-    const x = 18 + i * 58, h = [58, 70, 52, 64, 60][i], lvl = [.7, .45, .85, .3, .6][i], y = 108 - h;
-    jars += `<g><rect x="${x + 7}" y="${y - 10}" width="32" height="12" rx="4" fill="${c}"/><rect x="${x}" y="${y}" width="46" height="${h}" rx="13" fill="${c}" opacity=".16"/><rect x="${x}" y="${y + h * (1 - lvl)}" width="46" height="${h * lvl}" rx="13" fill="${c}" opacity=".85"/></g>`;
-  });
-  return `<svg class="hero" viewBox="0 0 310 130" aria-hidden="true">${jars}<rect x="4" y="108" width="302" height="7" rx="3.5" fill="currentColor" opacity=".18"/></svg>`;
+  return `<svg class="hero" viewBox="0 0 200 110" aria-hidden="true">${jarSVG(48, 92, 50, 62, '#2A9BD6', 'rgba(30,42,34,.55)', '#fff')}${jarSVG(112, 92, 42, 44, '#E2762B', 'rgba(30,42,34,.55)', '#fff')}<rect x="30" y="92" width="140" height="9" rx="4.5" fill="currentColor" opacity=".22"/></svg>`;
 }
 
 /* ---------------- categorías, colores, iconos por nombre ---------------- */
@@ -404,9 +455,9 @@ const CAT_COLORS = [
 ];
 const CAT_ICONS = [
   [['nevera','frigorifico','refrigerador','frio'], 'fridge'], [['congelador','congelado'], 'snow'], [['armario','alacena'], 'box'],
-  [['verdura','hortaliza'], 'leaf'], [['fruta'], 'apple'], [['carne','carniceria'], 'drumstick'], [['pescado','marisco'], 'fish'],
+  [['verdura','hortaliza'], 'carrot'], [['fruta'], 'apple'], [['carne','carniceria'], 'drumstick'], [['pescado','marisco'], 'fish'],
   [['lacteo'], 'milk'], [['pan','panaderia'], 'bread'], [['bebida'], 'bottle'], [['limpieza','higiene','hogar'], 'spray'],
-  [['especia'], 'spice'], [['legumbre'], 'bowl'], [['pasta','arroz'], 'bowl'], [['otro'], 'cart']
+  [['especia'], 'spice'], [['legumbre'], 'pod'], [['pasta','arroz'], 'wheat'], [['otro'], 'cart']
 ];
 const ORDER = ['nevera','congelador','armario','verdura','fruta','lacteo','carne','pescado','pan','pasta','legumbre','especia','bebida','limpieza'];
 const FALLBACK = ['#1F8F86', '#8A4FB5', '#C0432D', '#3F9142', '#2A9BD6', '#D9A512', '#E57FA0', '#7B4F2E'];
@@ -419,8 +470,8 @@ const PROD_ICONS = [
   [['lata','conserva','tomate frito'], 'can'], [['leche','nata'], 'milk'], [['huevo'], 'egg'], [['pan ','pan','baguette'], 'bread'],
   [['manzana','pera','platano','naranja','limon','fruta'], 'apple'], [['pollo','carne','ternera','cerdo','jamon','chorizo','filete','bacon'], 'drumstick'],
   [['pescado','atun','salmon','merluza','gamba','marisco'], 'fish'], [['queso'], 'cheese'], [['tomate'], 'tomato'], [['cafe','te '], 'coffee'],
-  [['agua'], 'water'], [['yogur'], 'cup'], [['arroz','pasta','macarron','espagueti','fideo','cereal','garbanzo','lenteja','alubia','legumbre'], 'bowl'],
-  [['aceite','vino','cerveza','zumo','vinagre','refresco'], 'bottle'], [['patata','cebolla','ajo','zanahoria','pimiento','lechuga','pepino','calabacin','verdura'], 'leaf'],
+  [['agua'], 'water'], [['yogur'], 'cup'], [['arroz','pasta','macarron','espagueti','fideo','cereal'], 'wheat'], [['garbanzo','lenteja','alubia','legumbre'], 'pod'],
+  [['aceite','vino','cerveza','zumo','vinagre','refresco'], 'bottle'], [['zanahoria'], 'carrot'], [['patata','cebolla','ajo','pimiento','lechuga','pepino','calabacin','verdura'], 'leaf'],
   [['mermelada','miel'], 'jar'], [['galleta','chocolate','bizcocho'], 'cookie'], [['papel','rollo'], 'roll'], [['azucar','harina','sal','mantequilla'], 'box'],
   [['detergente','lejia','jabon','suavizante','lavavajillas','bolsas'], 'spray'], [['pimenton','pimienta','oregano','comino','especia'], 'spice']
 ];
@@ -619,7 +670,7 @@ const sheetHead = (t) => `<div class="sheet-head"><h2>${esc(t)}</h2><button clas
 const SYNC_TXT = { ok: 'Sincronizado', sync: 'Guardando…', off: 'Sin conexión', err: 'Sin sincronizar', local: 'Solo en este dispositivo' };
 function renderTop(){
   const el = $('#top'); if (!el || !S.hogar) return;
-  el.innerHTML = `<div class="brand">${logo(38)}<div><div class="brand-name">Alacena</div><div class="hogar-name">${esc(S.hogar.nombre)}</div></div></div>
+  el.innerHTML = `<div class="brand">${logo(38)}<div><div class="brand-name">Despentsa</div><div class="hogar-name">${esc(S.hogar.nombre)}</div></div></div>
     <button class="syncpill ${S.sync}" data-a="tab" data-t="ajustes" title="Estado de la sincronización"><i></i><span>${SYNC_TXT[S.sync]}</span></button>`;
 }
 function grupos(){
@@ -658,14 +709,14 @@ function mountDespensa(){
 function rowHTML(p){
   const e = estado(p), c = catColor(p.categoria), d = diasCad(p), st = paso(p);
   const pct = Math.max(0, Math.min(100, p.cantidad / objetivo(p) * 100));
-  let tags = '';
-  if (e === 'out') tags += `<span class="tag out">Agotado</span>`;
-  else if (e === 'low') tags += `<span class="tag low">Poco</span>`;
-  if (d !== null && d <= 3) tags += `<span class="tag exp ${d < 0 ? 'bad' : ''}">${ic('cal')}${d < 0 ? 'Caducado' : d === 0 ? 'Caduca hoy' : d === 1 ? 'Caduca mañana' : 'Caduca en ' + d + ' d'}</span>`;
-  if (p.avisar !== false) tags += `<span>mín. ${fmt(p.minimo)} ${esc(p.unidad)}</span>`; else tags += `<span>sin aviso</span>`;
+  let flags = '';
+  if (e === 'out') flags += `<span class="tag out">Agotado</span>`;
+  else if (e === 'low') flags += `<span class="tag low">Poco</span>`;
+  if (d !== null && d <= 3) flags += `<span class="tag exp ${d < 0 ? 'bad' : ''}">${ic('cal')}${d < 0 ? 'Caducado' : d === 0 ? 'Hoy' : d === 1 ? 'Mañana' : d + ' días'}</span>`;
+  const sub = p.avisar !== false ? `mín. ${fmt(p.minimo)} ${esc(p.unidad)}` : 'sin aviso';
   return `<div class="row ${e}" style="--c:${c}">
-    <button class="ava" data-a="edit" data-id="${p.id}" aria-label="Editar ${esc(p.nombre)}" tabindex="-1">${ic(prodIcon(p))}</button>
-    <button class="info" data-a="edit" data-id="${p.id}" aria-label="Editar ${esc(p.nombre)}"><span class="nm">${esc(p.nombre)}</span><span class="sub">${tags}</span></button>
+    <div class="row-top"><button class="ava" data-a="edit" data-id="${p.id}" aria-label="Editar ${esc(p.nombre)}" tabindex="-1">${ic(prodIcon(p))}</button><div class="flags">${flags}</div></div>
+    <button class="info" data-a="edit" data-id="${p.id}" aria-label="Editar ${esc(p.nombre)}"><span class="nm">${esc(p.nombre)}</span><span class="sub">${sub}</span></button>
     <div class="step">
       <button data-a="dec" data-id="${p.id}" ${p.cantidad <= 0 ? 'disabled' : ''} aria-label="Quitar ${fmt(st)} ${esc(p.unidad)} de ${esc(p.nombre)}">${ic('minus')}</button>
       <div class="q" aria-live="polite"><b>${fmt(p.cantidad)}</b><small>${esc(p.unidad)}</small></div>
@@ -684,14 +735,14 @@ function renderDespensa(){
     ban = rep > 0
       ? `<div class="banner warn"><div class="lead">${ic('cart')}<div><b>${rep} ${rep === 1 ? 'producto por reponer' : 'productos por reponer'}</b><span>${n.agotado ? n.agotado + ' agotado' + (n.agotado > 1 ? 's' : '') : ''}${n.agotado && n.poco ? ' · ' : ''}${n.poco ? n.poco + ' con poco stock' : ''}</span></div></div><button class="btn sm" data-a="tab" data-t="compra">Ver lista</button></div>`
       : `<div class="banner good"><div class="lead">${ic('check')}<div><b>Todo en orden</b><span>Tu despensa está al día.</span></div></div></div>`;
-    if (S.installEvt && !ls.get('alacena:instalar-no')) ban += `<div class="banner good"><div class="lead">${ic('phone')}<div><b>Instala Alacena</b><span>Ábrela como una app, sin navegador.</span></div></div><span><button class="btn sm" data-a="install">Instalar</button></span></div>`;
+    if (S.installEvt && !ls.get('alacena:instalar-no')) ban += `<div class="banner good"><div class="lead">${ic('phone')}<div><b>Instala Despentsa</b><span>Ábrela como una app, sin navegador.</span></div></div><span><button class="btn sm" data-a="install">Instalar</button></span></div>`;
   }
   $('#d-banner').innerHTML = ban;
   $('#d-chips').innerHTML = all.length ? [['todo', 'Todo', ''], ['agotado', 'Agotados', 'out'], ['poco', 'Poco', 'low'], ['caduca', 'Caducan', '']]
     .filter(([k]) => k === 'todo' || n[k] > 0).map(([k, l, c]) => `<button class="chip ${c}" data-a="filtro" data-f="${k}" aria-pressed="${S.filtro === k}">${l}<em>${n[k]}</em></button>`).join('') : '';
   const box = $('#d-list');
   if (!all.length) {
-    box.innerHTML = emptyHTML('Tu despensa está vacía', 'Añade lo que tienes en casa y Alacena te avisará cuando algo se acabe.',
+    box.innerHTML = emptyHTML('Tu despensa está vacía', 'Añade lo que tienes en casa y Despentsa te avisará cuando algo se acabe.',
       `<div class="acts"><button class="btn" data-a="basicos">${ic('sparkle')} Empezar con básicos</button><button class="btn ghost" data-a="add">${ic('plus')} Añadir un producto</button></div>`);
     return;
   }
@@ -776,7 +827,7 @@ function renderAjustes(){
       <input type="file" id="imp" accept="application/json,.json" hidden>
     </div></div>
     <div class="set"><div class="card"><button class="srow" data-a="salir">${ic('out')}<span class="t">${h.local ? 'Cambiar de despensa' : 'Salir de este hogar'}<small>${h.local ? 'Tus datos seguirán guardados en este dispositivo' : 'Dejarás de verlo aquí. Podrás volver con el código.'}</small></span></button></div></div>
-    <p class="foot">Alacena · v2.0<br>Gratis, sin anuncios y sin cuentas.</p></section>`;
+    <p class="foot">Despentsa · v2.0<br>Gratis, sin anuncios y sin cuentas.</p></section>`;
 }
 
 /* ---------------- hoja: producto ---------------- */
@@ -898,7 +949,7 @@ function textoLista(){
   if (g.low.length) t += `\nBajo mínimo\n${g.low.map(linea).join('\n')}\n`;
   if (g.forz.length) t += `\nAñadidos\n${g.forz.map(linea).join('\n')}\n`;
   if (g.extras.length) t += `\nOtros\n${g.extras.map(x => `• ${x.nombre}`).join('\n')}\n`;
-  return t.trim() + '\n\nHecho con Alacena';
+  return t.trim() + '\n\nHecho con Despentsa';
 }
 function descargar(contenido, tipo, nombre){
   const url = URL.createObjectURL(new Blob([contenido], { type: tipo }));
@@ -948,12 +999,12 @@ const A = {
   renombrar: () => openSheet(sheetHead('Nombre del hogar') + `<form id="nf"><label class="f"><input class="in" name="n" value="${esc(S.hogar.nombre)}" maxlength="40" required></label><div class="acts"><button class="btn" type="submit">Guardar</button></div></form>`, () => $('#nf').elements.n.select()),
   copycode: () => copiar(showCode(S.hogar.code), 'Código copiado'),
   invitar: () => {
-    const txt = `Únete a nuestra despensa en Alacena: ${shareLink(S.hogar.code)}\n(o usa el código ${showCode(S.hogar.code)})`;
-    if (navigator.share) navigator.share({ title: 'Alacena', text: txt }).catch(() => {}); else copiar(txt, 'Invitación copiada');
+    const txt = `Únete a nuestra despensa en Despentsa: ${shareLink(S.hogar.code)}\n(o usa el código ${showCode(S.hogar.code)})`;
+    if (navigator.share) navigator.share({ title: 'Despentsa', text: txt }).catch(() => {}); else copiar(txt, 'Invitación copiada');
   },
   tema: el => { S.tema = el.dataset.v; ls.set('alacena:tema', S.tema); document.documentElement.dataset.theme = S.tema; renderApp(); },
   install: async () => { if (!S.installEvt) return; S.installEvt.prompt(); await S.installEvt.userChoice.catch(() => {}); S.installEvt = null; renderApp(); },
-  'export-json': () => descargar(JSON.stringify({ app: 'alacena', v: 2, hogar: S.hogar.nombre, items: S.data.items, extras: S.data.extras }, null, 2), 'application/json', `alacena-copia-${hoy()}.json`),
+  'export-json': () => descargar(JSON.stringify({ app: 'despentsa', v: 2, hogar: S.hogar.nombre, items: S.data.items, extras: S.data.extras }, null, 2), 'application/json', `despentsa-copia-${hoy()}.json`),
   'import-json': () => $('#imp').click(),
   salir: () => openSheet(sheetHead(S.hogar.local ? 'Cambiar de despensa' : 'Salir de este hogar') + `<p style="color:var(--ink-2);margin-bottom:18px">${S.hogar.local ? 'Tus productos seguirán guardados en este dispositivo.' : `Dejarás de ver «${esc(S.hogar.nombre)}» en este dispositivo. Los demás no se verán afectados y podrás volver con el código <b>${esc(showCode(S.hogar.code))}</b>.`}</p><div class="acts"><button class="btn ghost" data-a="close">Cancelar</button><button class="btn danger" data-a="salir-ok">Continuar</button></div>`),
   'salir-ok': () => { closeSheet(); DB.disconnect(); S.hogar = null; ls.del('alacena:hogar'); S.data = { items: {}, extras: {}, hist: [], meta: {} }; S.ob = { step: 'inicio' }; renderApp(); },
@@ -1025,7 +1076,7 @@ document.addEventListener('change', async e => {
     openSheet(sheetHead('Restaurar copia') + `<p style="color:var(--ink-2);margin-bottom:18px">Se sustituirán los productos actuales por los <b>${n}</b> de la copia.</p><div class="acts"><button class="btn ghost" data-a="close">Cancelar</button><button class="btn" id="imp-ok">Restaurar</button></div>`, () => {
       $('#imp-ok').onclick = () => { closeSheet(); mutate([{ t: 'set', path: 'items', v: items }, { t: 'set', path: 'extras', v: src.extras || {} }]); toast('Copia restaurada'); };
     });
-  } catch { toast('Ese archivo no parece una copia de Alacena'); }
+  } catch { toast('Ese archivo no parece una copia de Despentsa'); }
   e.target.value = '';
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
@@ -1038,8 +1089,8 @@ function renderOnboarding(){
   let h = '';
   if (o.step === 'inicio') {
     const n = legacyCount();
-    h = `<div class="ob-hero">${shelfSVG()}</div>
-      <div class="ob-brand">${logo(46)}<h1>Alacena</h1></div>
+    h = `<div class="ob-hero">${logo(104)}</div>
+      <div class="ob-brand"><h1>Despentsa</h1></div>
       <p class="ob-tag">Tu despensa, siempre al día.</p>
       <ul class="ob-points">
         <li>${ic('bell')}<div><b>Sabe qué se acaba</b><span>Fija un mínimo y te avisa antes de quedarte sin nada.</span></div></li>
@@ -1095,7 +1146,7 @@ async function unirse(code){
 /* ---------------- arranque ---------------- */
 document.documentElement.dataset.theme = S.tema;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); S.installEvt = e; if (S.hogar) renderApp(); });
-window.addEventListener('appinstalled', () => { S.installEvt = null; toast('Alacena instalada'); });
+window.addEventListener('appinstalled', () => { S.installEvt = null; toast('Despentsa instalada'); });
 window.addEventListener('online', () => { if (S.hogar && !S.hogar.local) DB.connect(S.hogar.code); });
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
 

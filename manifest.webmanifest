@@ -1,6 +1,6 @@
 {
-  "name": "Alacena · Tu despensa, siempre al día",
-  "short_name": "Alacena",
+  "name": "Despentsa · Tu despensa, siempre al día",
+  "short_name": "Despentsa",
   "description": "Controla lo que tienes en casa, recibe avisos cuando algo se acaba y comparte la lista de la compra con quien vives.",
   "lang": "es",
   "start_url": "./",
